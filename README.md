@@ -1,0 +1,2 @@
+# SpeakEasy
+Speak with happiness!.
