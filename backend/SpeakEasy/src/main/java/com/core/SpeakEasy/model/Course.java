@@ -42,6 +42,10 @@ public class Course {
 
   @ManyToMany(mappedBy = "courses")
   private Set<User> users;
-  
+
+  //I don't if is necessary to use orphanRemoval = true
+  @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<Lesson> lessons;
+
   private Integer level;
 }
