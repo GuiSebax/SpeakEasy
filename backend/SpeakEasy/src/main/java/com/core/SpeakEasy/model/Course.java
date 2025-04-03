@@ -18,7 +18,7 @@ public class Course {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  
+
   @Column(nullable = false, unique = true)
   private String name;
 
@@ -26,26 +26,30 @@ public class Course {
   private String description;
 
   @Column(nullable = false)
-  private String native_language;
+  private String nativeLanguage;
 
   @Column(nullable = false)
-  private String target_language;
+  private String targetLanguage;
 
   @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-  private Boolean is_active;
+  private Boolean isActive;
 
-  @Column(name = "date_of_creation", updatable = false)
-  private LocalDateTime initial_date = LocalDateTime.now();
+  @Column(name = "dateOfCreation", updatable = false)
+  private LocalDateTime initialDate = LocalDateTime.now();
 
-  @Column(name = "course_duration")
+  @Column(name = "courseDuration")
   private Date duration;
 
   @ManyToMany(mappedBy = "courses")
   private Set<User> users;
 
-  //I don't if is necessary to use orphanRemoval = true
+  @Column(nullable = false, name = "imgUrl")
+  private String imgUrl;
+
+  // I don't if is necessary to use orphanRemoval = true
   @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<Lesson> lessons;
 
+  @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
   private Integer level;
 }

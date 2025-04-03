@@ -8,7 +8,10 @@ import lombok.*;
 
 @Entity
 @Table(name = "users")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
   @Id
@@ -27,17 +30,13 @@ public class User {
   @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
   private Integer level;
 
-  @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+  @Column(nullable = true, columnDefinition = "INT DEFAULT 0")
   private Integer xp;
 
   @Column(name = "date", updatable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
 
   @ManyToMany
-  @JoinTable(
-    name = "user_courses",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "course_id")
-  )
+  @JoinTable(name = "userCourses", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "courseId"))
   private Set<Course> courses;
 }

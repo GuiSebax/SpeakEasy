@@ -10,9 +10,9 @@ import com.core.SpeakEasy.model.Course;
 import com.core.SpeakEasy.service.CourseService;
 
 @RestController
-@RequestMapping("/courses")
+@RequestMapping("/api/courses")
 public class CourseController {
-  
+
   @Autowired
   private CourseService courseService;
 
@@ -34,7 +34,7 @@ public class CourseController {
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
-  
+
   @PostMapping
   public Course createCourse(@RequestBody Course course) {
     return courseService.saveCourse(course);
@@ -46,9 +46,9 @@ public class CourseController {
         .map(course -> {
           course.setName(updatedCourse.getName());
           course.setDescription(updatedCourse.getDescription());
-          course.setNative_language(updatedCourse.getNative_language());
-          course.setTarget_language(updatedCourse.getTarget_language());
-          course.setIs_active(updatedCourse.getIs_active());
+          course.setNativeLanguage(updatedCourse.getNativeLanguage());
+          course.setTargetLanguage(updatedCourse.getTargetLanguage());
+          course.setIsActive(updatedCourse.getIsActive());
           course.setLevel(updatedCourse.getLevel());
           course.setDuration(updatedCourse.getDuration());
           return ResponseEntity.ok(courseService.saveCourse(course));

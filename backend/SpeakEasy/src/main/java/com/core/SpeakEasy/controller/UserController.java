@@ -11,7 +11,7 @@ import com.core.SpeakEasy.service.UserService;
 import com.core.SpeakEasy.model.User;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
   @Autowired
@@ -27,12 +27,12 @@ public class UserController {
     Optional<User> user = userService.getUserById(id);
     return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
   }
-  
+
   @PostMapping
   public User createUser(@RequestBody User user) {
     return userService.saveUser(user);
   }
-  
+
   @PutMapping("/{id}")
   public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
     Optional<User> existingUser = userService.getUserById(id);
@@ -46,7 +46,7 @@ public class UserController {
     })
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
-  
+
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
     if (userService.getUserById(id).isPresent()) {

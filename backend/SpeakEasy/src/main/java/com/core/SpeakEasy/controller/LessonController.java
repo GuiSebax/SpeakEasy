@@ -13,26 +13,26 @@ import com.core.SpeakEasy.service.LessonService;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/lessons")
+@RequestMapping("/api/lessons")
 public class LessonController {
-  
+
   @Autowired
   private LessonService lessonService;
 
   private CourseService courseService;
-  
+
   @GetMapping
   public List<Lesson> getAllLessons() {
     return lessonService.getAllLessons();
   }
-  
+
   @GetMapping("/{id}")
   public ResponseEntity<Lesson> getLessonById(@PathVariable Long id) {
     return lessonService.getLessonById(id)
         .map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
-  
+
   @GetMapping("/title/{title}")
   public ResponseEntity<Lesson> getLessonByTitle(@PathVariable String title) {
     return lessonService.getLessonByTitle(title)
@@ -66,7 +66,7 @@ public class LessonController {
         })
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
-  
+
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteLesson(@PathVariable Long id) {
     if (lessonService.getLessonById(id).isPresent()) {
