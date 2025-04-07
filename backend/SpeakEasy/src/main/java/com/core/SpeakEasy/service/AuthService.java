@@ -2,22 +2,23 @@ package com.core.SpeakEasy.service;
 
 import com.core.SpeakEasy.exceptions.NotFoundException;
 import com.core.SpeakEasy.exceptions.ValidationException;
-import com.core.SpeakEasy.model.AuthUser;
 import com.core.SpeakEasy.model.Role;
-import com.core.SpeakEasy.repository.AuthUserRepository;
+import com.core.SpeakEasy.model.User;
+import com.core.SpeakEasy.repository.UserRepository;
 import com.core.SpeakEasy.security.JwtUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class AuthUserService {
+public class AuthService {
 
     @Autowired
-    private AuthUserRepository authUserRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -25,53 +26,58 @@ public class AuthUserService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    public AuthResponse registerUser(AuthUser user) {
+    public AuthResponse registerUser(User user) {
         if (user.getEmail() == null || user.getPassword() == null) {
             throw new ValidationException("Email e senha são obrigatórios.");
         }
 
-        // Verifica se o email já está cadastrado
-        Optional<AuthUser> existingUser = authUserRepository.findByEmail(user.getEmail());
+        // verify if the email is already registered
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
             throw new ValidationException("Email já cadastrado.");
         }
 
-        // Criptografa a senha antes de salvar
+        // encode the password
         String hashedPassword = passwordEncoder.encode(user.getPassword());
 
+        // verify user role
         Role userRole = user.getRole() != null && user.getRole() == Role.ADMIN ? Role.ADMIN : Role.USER;
 
-        AuthUser newUser = new AuthUser();
+        // create a new user
+        User newUser = new User();
         newUser.setEmail(user.getEmail().trim().toLowerCase());
         newUser.setPassword(hashedPassword);
         newUser.setName(user.getName() != null ? user.getName().trim() : null);
         newUser.setRole(userRole);
-        authUserRepository.save(newUser);
+        newUser.setLevel(0);
+        newUser.setXp(0);
+        newUser.setCreatedAt(LocalDateTime.now());
+        userRepository.save(newUser);
 
+        // Generate the JWT token
         String token = jwtUtil.generateToken(newUser.getId());
 
         return new AuthResponse(newUser, token);
-
     }
 
-    public AuthResponse loginUser(AuthUser user) {
+    public AuthResponse loginUser(User user) {
         if (user.getEmail() == null || user.getPassword() == null) {
             throw new ValidationException("Email e senha são obrigatórios");
         }
 
-        // Busca usuário pelo email
-        AuthUser authUser = authUserRepository.findByEmail(user.getEmail())
+        // fetch user by email
+        User foundUser = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
-        // Verifica a senha
-        if (!passwordEncoder.matches(user.getPassword(), authUser.getPassword())) {
+        // verify password
+        if (!passwordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
             throw new ValidationException("Senha inválida");
         }
 
-        // Gera o token JWT
-        String token = jwtUtil.generateToken(authUser.getId());
+        // Generate the JWT token
+        String token = jwtUtil.generateToken(foundUser.getId());
 
-        return new AuthResponse(authUser, token);
+        return new AuthResponse(foundUser, token);
     }
 
 }

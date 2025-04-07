@@ -1,17 +1,17 @@
 package com.core.SpeakEasy.service;
 
-import com.core.SpeakEasy.model.AuthUser;
+import com.core.SpeakEasy.model.User;
 
 public class AuthResponse {
-    private AuthUser user;
+    private User user;
     private String token;
 
-    public AuthResponse(AuthUser user, String token) {
+    public AuthResponse(User user, String token) {
         this.user = user;
         this.token = token;
     }
 
-    public AuthUser getUser() {
+    public User getUser() {
         return user;
     }
 

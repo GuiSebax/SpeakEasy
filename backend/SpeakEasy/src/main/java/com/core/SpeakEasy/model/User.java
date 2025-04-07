@@ -29,10 +29,17 @@ public class User {
 
   @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
   private Integer level;
-
+  
   @Column(nullable = true, columnDefinition = "INT DEFAULT 0")
   private Integer xp;
 
+  @Column(nullable = false, name = "targetLanguage")
+  private String language;
+  
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private Role role;
+  
   @Column(name = "date", updatable = false)
   private LocalDateTime createdAt = LocalDateTime.now();
 
